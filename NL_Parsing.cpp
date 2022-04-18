@@ -9,6 +9,7 @@ std::string verbPhrase(std::vector<Word> words, int& currentWord, std::string& s
 std::string prepositionalPhrase(std::vector<Word> words, int& currentWord, std::string& state, bool& legal);
 std::string numVectorToString(std::vector<std::string> num);
 std::vector<std::string> numIntersection(std::vector<std::string> num1, std::vector<std::string> num2);
+std::string tenseVectorToString(std::vector<std::string> tense);
 
 int main()
 {
@@ -272,7 +273,7 @@ std::string verbPhrase(std::vector<Word> words, int& currentWord, std::string& s
     if((words[currentWord].type == "verb") && (words[currentWord].verb != "do"))
     {
         std::vector<std::string> intersection = numIntersection(words[currentWord].num, num);
-        parse += "(VERB \"" + words[currentWord].word + "\")" +numVectorToString(intersection);
+        parse += "(VERB \"" + words[currentWord].word + "\")" + numVectorToString(intersection) + " " + tenseVectorToString(words[currentWord].tense);
         currentWord++;
         localState = "V2";
     }
@@ -452,6 +453,14 @@ std::vector<Word> loadStandardLexicon()
         num.clear();
         type_descriptor.clear();
 
+    Word on;
+        on.newPreposition("on");
+
+        lexicon.push_back(on);
+        tense.clear();
+        num.clear();
+        type_descriptor.clear();
+
     Word old;
         old.newAdjective("old");
 
@@ -468,7 +477,24 @@ std::vector<Word> loadStandardLexicon()
         num.clear();
         type_descriptor.clear();
 
-    
+    Word dogs;
+        num = { "3p" };
+        dogs.newNoun("dogs", num);
+
+        lexicon.push_back(dogs);
+        tense.clear();
+        num.clear();
+        type_descriptor.clear();
+
+    Word ball;
+        num = { "3s" };
+        ball.newNoun("ball", num);
+
+        lexicon.push_back(ball);
+        tense.clear();
+        num.clear();
+        type_descriptor.clear();
+
     return lexicon;
 }
 
@@ -532,6 +558,24 @@ std::string numVectorToString(std::vector<std::string> num)
     temp += ")";
     return temp;
 }
+
+std::string tenseVectorToString(std::vector<std::string> tense)
+{
+    std::string temp = "(TENSE ";
+
+    for (int i = 0; i < tense.size(); i++)
+    {
+        temp += tense[i];
+        if (i < tense.size() - 1)
+        {
+            temp += ",";
+        }
+    }
+    temp += ")";
+    return temp;
+}
+
+
 
 std::vector<std::string> numIntersection(std::vector<std::string> num1, std::vector<std::string> num2)
 {
